@@ -80,6 +80,7 @@ public class Run {
 	}
 	
 	public void addition() {
+		newMatrix = new int[size][size];
 		for (int y = 0; y < size; y++) {
 			for (int x = 0; x < size; x++) {
 				newMatrix[y][x] = matrix[1][y][x] + matrix[2][y][x];
@@ -88,6 +89,7 @@ public class Run {
 	}
 	
 	public void subtraction() {
+		newMatrix = new int[size][size];
 		for (int y = 0; y < size; y++) {
 			for (int x = 0; x < size; x++) {
 				newMatrix[y][x] = matrix[1][y][x] - matrix[2][y][x];
