@@ -15,6 +15,7 @@ public class Run {
 		start:
 		do {
 			Scanner selection = new Scanner(System.in);
+			System.out.println("****************************");
 			System.out.println("Select the function you want.");
 			System.out.println("---------------------------------");
 			System.out.println("A - Addition");
@@ -22,15 +23,12 @@ public class Run {
 			System.out.println("M - Multiplication");
 			System.out.println("D - Determinant");
 			System.out.println("I - Inverse");
+			System.out.println("****************************");
 			String selected = selection.nextLine();
 			
 			input();
-			output_test();
-			for (int y = 0; y < size; y++) {
-				for (int x = 0; x < size; x++) {
-					newMatrix[y][x] = 0;
-				}
-			}
+			//output_test();
+			newMatrix = new int[size][size];
 			switch (selected.toUpperCase()) {
 				case "A" :
 					addition();
@@ -80,26 +78,23 @@ public class Run {
 	}
 	
 	public void addition() {
-		newMatrix = new int[size][size];
 		for (int y = 0; y < size; y++) {
 			for (int x = 0; x < size; x++) {
-				newMatrix[y][x] = matrix[1][y][x] + matrix[2][y][x];
+				newMatrix[y][x] = matrix[0][y][x] + matrix[1][y][x];
 			}
 		}
 	}
 	
 	public void subtraction() {
-		newMatrix = new int[size][size];
 		for (int y = 0; y < size; y++) {
 			for (int x = 0; x < size; x++) {
-				newMatrix[y][x] = matrix[1][y][x] - matrix[2][y][x];
+				newMatrix[y][x] = matrix[0][y][x] - matrix[1][y][x];
 			}
 		}
 	}
 	
 	public void multiplication() {
 		int newy, newx, z = 0;
-		newMatrix = new int[size][size];
 		for (newy = 0; newy < size; newy++) {
 			for (newx = 0; newx < size; newx++) {
 				for (int i = 0; i < size; i++) {
