@@ -7,34 +7,33 @@ public class Main {
 	int[][][] matrix;
 	
 	public static void main(String[] args) {
-		
-		Scanner selection = new Scanner(System.in);
-		System.out.println("Select the function you want.");
-		System.out.println("---------------------------------");
-		System.out.println("A - Addition");
-		System.out.println("S - Subtraction");
-		System.out.println("M - Multiplication");
-		System.out.println("D - Determinant");
-		System.out.println("I - Inverse");
-		
-		
-		switch (selection.next().toUpperCase()) {
-			case "M" :
-				multiplication(size, matrix);
-				break;
-		}		
+		do {
+			Scanner selection = new Scanner(System.in);
+			System.out.println("Select the function you want.");
+			System.out.println("---------------------------------");
+			System.out.println("A - Addition");
+			System.out.println("S - Subtraction");
+			System.out.println("M - Multiplication");
+			System.out.println("D - Determinant");
+			System.out.println("I - Inverse");
+			
+			
+			switch (selection.next().toUpperCase()) {
+				case "M" :
+					multiplication(size, matrix);
+					break;
+			}		
+		}while(true);
 	}
 	
 	public void input() {
 		Scanner scanS = new Scanner(System.in);
     
-
 		System.out.println("Please enter the size of the matrix :");
 		size = scanS.nextInt();
 
 		matrix = new int[2][size][size];
 		Scanner scanM = new Scanner(System.in);
-
 
 		for (int z = 0; z < 2; z++) {
 			for (int y = 0; y < size; y++) {
@@ -59,7 +58,6 @@ public class Main {
 				}
 			}
 		}
-
 
 		for (newy = 0; newy < size; newy++) {
 			System.out.print("{ ");
