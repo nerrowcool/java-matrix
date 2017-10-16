@@ -25,9 +25,11 @@ public class Run {
 			System.out.println("I - Inverse");
 			System.out.println("****************************");
 			String selected = selection.nextLine().toUpperCase();
-			System.out.println(selected);
-			
-			input(selected);
+			if (selected.equals("A") || selected.equals("S") || selected.equals("M") || selected.equals("D") || selected.equals("I")) {
+				input(selected);
+			} else {
+				continue start;
+			}
 
 			newMatrix = new int[size][size];
 			minor = new int[size - 1][size - 1];
@@ -117,59 +119,55 @@ public class Run {
 	}
 	
 	void determinant() {
-		int count, minor_size = (size - 1), result = 0, sub_result = 0;
-		for ( int loop = 0; loop < size; loop++) {
+		int pos, dx, dy, minor_pos, temp, step, minor_size = (size - 1),result = 0, subresult;
+		
+		//why only larger than 3x3
+		//indicate working on which number
+		for (pos = 0; pos < size; pos++) {
+			subresult = 0;
 			//get the minor
-			for (int dy = 0; dy < minor_size; dy++) {
-				count = 0;
-				for (int dx = 0; dx < loop; dx++) {
+			for (dy = 0; dy < minor_size; dy++) {
+				for (dx = 0; dx < pos; dx++) {
 					minor[dy][dx] = matrix[0][dy + 1][dx];
-					count++;
 				}
-				for (int x = count; x < minor_size; x++) {
-					minor[dy][x] = matrix[0][dy + 1][x + 1];
+				for (dx = pos; dx < minor_size; dx++) {
+					minor[dy][dx] = matrix[0][dy + 1][dx + 1];
 				}
 			}
+			output(minor, minor_size);
+			
 			//calculate minor determinant
-			for (int x = 0; x < size; x++) {
-				for (int add = 0; add < minor_size; add++) {
-					System.out.println("Adding");
-					//System.out.println("Add is " + add);
-					int temp = 1;
-					for (int step = 0; step < minor_size; step++) {
-						//System.out.println("Step is " + step);
-						if ((add + step) >= minor_size) {
-							System.out.println("step = " + step + "\nadd + step = " + ((add + step) % minor_size));
-							temp *= minor[step][(add + step) % minor_size];
-						} else {
-							System.out.println("step = " + step + "\nadd + step = " + (add + step));
-							temp *= minor[step][add + step];
-						}
-						System.out.println("temp = " +temp);
+			for (minor_pos = 0; minor_pos < minor_size; minor_pos++) {
+				temp = 1;
+				for (step = 0; step < minor_size; step++) {
+					if ((minor_pos + step) >= minor_size) {
+						temp *= minor[step][(minor_pos + step) % minor_size];
+					} else {
+						temp *= minor[step][minor_pos + step];
 					}
-					sub_result += temp;
-					System.out.println("sub_result = " + sub_result);
 				}
-				for (int sub = minor_size - 1; sub >= 0; sub--) {
-					System.out.println("Subing");
-					int temp = 1;
-					for (int step = 0; step < minor_size; step++) {
-						if((sub - step) < 0) {
-							System.out.println("step = " + step + "\nMath.abs(sub - step) % minor_size = " + (Math.abs(sub - step) % minor_size));
-							temp *= minor[step][Math.abs(sub - step) % minor_size];
-						} else {
-							System.out.println("step = " + step + "\nsub - step = " + (sub - step));
-							temp *= minor[step][sub - step];
-						}
-						System.out.println("temp = " +temp);
-					}
-					sub_result -= temp;
-					System.out.println("sub_result = " + sub_result);
-				}
+				System.out.println("temp =  " + temp);
+				subresult += temp;
 			}
-			result += matrix[0][0][loop] * sub_result;
+			
+			for (minor_pos = minor_size - 1; minor_pos >= 0; minor_pos--) {
+				temp = 1;
+				for (step = 0; step < minor_size; step++) {
+					if((minor_pos - step) < 0) {
+						temp *= minor[step][minor_pos - step + minor_size];
+					} else {
+						temp *= minor[step][minor_pos - step];
+					}
+				}
+				System.out.println("temp =  " + temp);
+				subresult -= temp;
+			}
+			if (pos % 2 == 0) {
+				result += matrix[0][0][pos] * subresult;
+			} else {
+				result -= matrix[0][0][pos] * subresult;
+			}
 		}
-		output2(matrix, size);
 		System.out.println("The determinant is " + result);
 	}
 	
