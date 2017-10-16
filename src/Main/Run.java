@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class Run {
 	int size;
-	int[][] newMatrix, minor;
+	int[][] newMatrix;
 	int[][][] matrix;
 	
 	public static void main(String[] args) {
@@ -30,9 +30,8 @@ public class Run {
 			} else {
 				continue start;
 			}
-
+			
 			newMatrix = new int[size][size];
-			minor = new int[size - 1][size - 1];
 			switch (selected) {
 				case "A" :
 					addition();
@@ -50,7 +49,13 @@ public class Run {
 					break;
 					
 				case "D" :
-					determinant();
+					for (int L = 1; L < size - 2; L++) {
+						minor(L);
+						output2(L, matrix, size);
+					}
+					for(int L = size - 3; L > -1; L--) {
+						determinant(L);
+					}
 					break;
 					
 				case "I" :
@@ -70,9 +75,9 @@ public class Run {
 		System.out.println("Please enter the size of the matrix :");
 		size = scanS.nextInt();
 
-		matrix = new int[2][size][size];
 		Scanner scanM = new Scanner(System.in);
 		if (s.equals("D") || s.equals("I")) {
+			matrix = new int[size - 2][size][size];
 			for (int y = 0; y < size; y++) {
 				System.out.println("Please enter the " + (y + 1) + " row of matrix :");
 				for (int x = 0; x < size; x++) {
@@ -80,6 +85,7 @@ public class Run {
 				}
 			}
 		} else {
+			matrix = new int[2][size][size];
 			for (int z = 0; z < 2; z++) {
 				for (int y = 0; y < size; y++) {
 					System.out.println("Please enter the " + (y + 1) + " row of " + (z + 1) + " matrix :");
@@ -118,35 +124,37 @@ public class Run {
 		}
 	}
 	
-	void determinant() {
-		int pos, dx, dy, minor_pos, temp, step, minor_size = (size - 1),result = 0, subresult;
-		
-		//why only larger than 3x3
-		//indicate working on which number
-		for (pos = 0; pos < size; pos++) {
-			subresult = 0;
+	void minor(int L) { 	//L should be start with 1, minor should also be same matrix
+		int pos, dx, dy, minor_size = (size - L);
+		//indicate working on which number in parent matrix
+		for (pos = 0; pos < size - L + 1; pos++) {
 			//get the minor
 			for (dy = 0; dy < minor_size; dy++) {
 				for (dx = 0; dx < pos; dx++) {
-					minor[dy][dx] = matrix[0][dy + 1][dx];
+					matrix[L][dy][dx] = matrix[L - 1][dy + 1][dx];
 				}
 				for (dx = pos; dx < minor_size; dx++) {
-					minor[dy][dx] = matrix[0][dy + 1][dx + 1];
+					matrix[L][dy][dx] = matrix[L - 1][dy + 1][dx + 1];
 				}
 			}
-			output(minor, minor_size);
-			
+		}
+	}
+	
+	void determinant(int L) {		//L should be start with 1, minor should also be same matrix
+		int pos, minor_size = (size - L), minor_pos, temp, step, result = 0, subresult;
+		//indicate working on which number in parent matrix
+		for (pos = 0; pos < size - L; pos++) {
+			subresult = 0;
 			//calculate minor determinant
 			for (minor_pos = 0; minor_pos < minor_size; minor_pos++) {
 				temp = 1;
 				for (step = 0; step < minor_size; step++) {
 					if ((minor_pos + step) >= minor_size) {
-						temp *= minor[step][(minor_pos + step) % minor_size];
+						temp *= matrix[L][step][(minor_pos + step) % minor_size];
 					} else {
-						temp *= minor[step][minor_pos + step];
+						temp *= matrix[L][step][minor_pos + step];
 					}
 				}
-				System.out.println("temp =  " + temp);
 				subresult += temp;
 			}
 			
@@ -154,18 +162,17 @@ public class Run {
 				temp = 1;
 				for (step = 0; step < minor_size; step++) {
 					if((minor_pos - step) < 0) {
-						temp *= minor[step][minor_pos - step + minor_size];
+						temp *= matrix[L][step][minor_pos - step + minor_size];
 					} else {
-						temp *= minor[step][minor_pos - step];
+						temp *= matrix[L][step][minor_pos - step];
 					}
 				}
-				System.out.println("temp =  " + temp);
 				subresult -= temp;
 			}
 			if (pos % 2 == 0) {
-				result += matrix[0][0][pos] * subresult;
+				result += matrix[L - 1][0][pos] * subresult;
 			} else {
-				result -= matrix[0][0][pos] * subresult;
+				result -= matrix[L - 1][0][pos] * subresult;
 			}
 		}
 		System.out.println("The determinant is " + result);
@@ -181,13 +188,13 @@ public class Run {
 		}
 	}
 	
-	void output2(int[][][] M, int S) {
+	void output2(int L, int[][][] M, int S) {
 		for (int y = 0; y < S; y++) {
 			System.out.print("{ ");
 			for (int x = 0; x < S - 1; x++) {
-				System.out.print(M[0][y][x] + ", ");
+				System.out.print(M[L][y][x] + ", ");
 			}
-			System.out.print(M[0][y][(S - 1)] + " };\n");
+			System.out.print(M[L][y][(S - 1)] + " };\n");
 		}
 	}
 	
