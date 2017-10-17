@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 public class Run {
 	int size;
+	int[] det;
 	int[][] newMatrix;
 	int[][][] matrix;
 	
@@ -49,12 +50,15 @@ public class Run {
 					break;
 					
 				case "D" :
+					det = new int[size - 2];
 					for (int L = 1; L < size - 2; L++) {
-						minor(L);
-						output2(L, matrix, size);
-					}
-					for(int L = size - 3; L > -1; L--) {
-						determinant(L);
+						//indicate working on which number in parent matrix
+						for (int pos = 0; pos < size - L + 1; pos++) {
+							//operate here
+							minor(pos, L);
+							determinant_3x3();
+							output2(1, matrix, size);
+						}
 					}
 					break;
 					
@@ -69,6 +73,8 @@ public class Run {
 		}while(true);
 	}
 	
+	
+	//done!
 	void input(String s) {
 		Scanner scanS = new Scanner(System.in);
     
@@ -97,6 +103,7 @@ public class Run {
 		}
 	}
 	
+	//done!
 	void addition() {
 		for (int y = 0; y < size; y++) {
 			for (int x = 0; x < size; x++) {
@@ -105,6 +112,7 @@ public class Run {
 		}
 	}
 	
+	//done!
 	void subtraction() {
 		for (int y = 0; y < size; y++) {
 			for (int x = 0; x < size; x++) {
@@ -113,6 +121,7 @@ public class Run {
 		}
 	}
 	
+	//done!
 	 void multiplication() {
 		int newy, newx, z = 0;
 		for (newy = 0; newy < size; newy++) {
@@ -124,23 +133,50 @@ public class Run {
 		}
 	}
 	
-	void minor(int L) { 	//L should be start with 1, minor should also be same matrix
-		int pos, dx, dy, minor_size = (size - L);
-		//indicate working on which number in parent matrix
-		for (pos = 0; pos < size - L + 1; pos++) {
-			//get the minor
-			for (dy = 0; dy < minor_size; dy++) {
-				for (dx = 0; dx < pos; dx++) {
-					matrix[L][dy][dx] = matrix[L - 1][dy + 1][dx];
-				}
-				for (dx = pos; dx < minor_size; dx++) {
-					matrix[L][dy][dx] = matrix[L - 1][dy + 1][dx + 1];
-				}
+	 
+	 //done!
+	void minor(int P, int L) { 	//L should be start with 1, minor should also be same matrix
+		int dx, dy, minor_size = (size - L);
+		//get the minor
+		for (dy = 0; dy < minor_size; dy++) {
+			for (dx = 0; dx < P; dx++) {
+				matrix[L][dy][dx] = matrix[L - 1][dy + 1][dx];
+			}
+			for (dx = P; dx < minor_size; dx++) {
+				matrix[L][dy][dx] = matrix[L - 1][dy + 1][dx + 1];
 			}
 		}
 	}
 	
-	void determinant(int L) {		//L should be start with 1, minor should also be same matrix
+	//done!!
+	void determinant_3x3() {
+		int minor_pos, temp, step;
+		for (minor_pos = 0; minor_pos < 3; minor_pos++) {
+			temp = 1;
+			for (step = 0; step < 3; step++) {
+				if ((minor_pos + step) >= 3) {
+					temp *= matrix[size - 3][step][(minor_pos + step) % 3];
+				} else {
+					temp *= matrix[size - 3][step][minor_pos + step];
+				}
+			}
+			det[size - 3] += temp;
+		}
+		
+		for (minor_pos = 3; minor_pos >= 0; minor_pos--) {
+			temp = 1;
+			for (step = 0; step < 3; step++) {
+				if((minor_pos - step) < 0) {
+					temp *= matrix[size - 3][step][minor_pos - step + 3];
+				} else {
+					temp *= matrix[size - 3][step][minor_pos - step];
+				}
+			}
+			det[size - 3] -= temp;
+		}
+	}
+	
+	void determinant(int L) {		//L should be started with 1
 		int pos, minor_size = (size - L), minor_pos, temp, step, result = 0, subresult;
 		//indicate working on which number in parent matrix
 		for (pos = 0; pos < size - L; pos++) {
